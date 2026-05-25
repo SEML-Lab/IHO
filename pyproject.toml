@@ -5,6 +5,7 @@ description = "Inference-time helpers for IHO attack generation."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "SEML Lab" }]
+license = "MIT"
 dependencies = [
     "accelerate==1.8.1",
     "huggingface-hub==0.35.1",

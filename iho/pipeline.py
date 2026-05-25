@@ -12,11 +12,13 @@ DEFAULT_BASE_MODEL = "GSAI-ML/LLaDA-8B-Base"
 
 SUPPORTED_CHECKPOINTS = (
     "SEML-Lab/IHO-Llama-3-8B-Instruct",
-    "SEML-Lab/IHO-Llama-3-8B-Instruct-RR",
-    "SEML-Lab/IHO-Llama-3-8B-Instruct-RR-with-detector",
-    "SEML-Lab/IHO-LAT-Llama-3-8B",
+    "SEML-Lab/IHO-CircuitBreaker-Llama-3-8B-PolyGuard",
+    "SEML-Lab/IHO-Qwen2.5-32B-Instruct",
+    "SEML-Lab/IHO-Qwen2.5-7B-Instruct-PolyGuard",
+    "SEML-Lab/IHO-CircuitBreaker-Llama-3-8B",
     "SEML-Lab/IHO-Qwen2.5-7B-Instruct",
-    "SEML-Lab/IHO-Gemma-3-1B-IT",
+    "SEML-Lab/IHO-CAT-Llama-3-8B",
+    "SEML-Lab/IHO-LAT-Llama-3-8B",
 )
 
 

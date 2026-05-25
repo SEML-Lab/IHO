@@ -20,3 +20,20 @@ def test_resolve_dtype_aliases():
 def test_strict_checkpoint_validation():
     with pytest.raises(ValueError):
         load_model("SEML-Lab/not-an-iho-checkpoint", strict_checkpoint_names=True)
+
+
+def test_capitalized_llada_wrapper_import():
+    from iho.model_wrapper.LLaDAWrapper import LLaDAWrapper as PublicWrapper
+    from iho.model_wrapper.llada import LLaDAWrapper
+
+    assert PublicWrapper is LLaDAWrapper
+
+
+def test_load_model_signature_has_requested_options():
+    import inspect
+
+    params = inspect.signature(load_model).parameters
+
+    assert "attack_size" in params
+    assert "attack_steps" in params
+    assert "cache_dir" in params

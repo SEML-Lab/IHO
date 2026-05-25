@@ -2,27 +2,53 @@
 
 Minimal inference package for IHO attack generation.
 
+## Command Line
+
+Run the default checkpoint with pixi:
+
+```bash
+pixi run python -m iho.main "etc" --device cuda -n 32 -b 32 --attack_size 32
+```
+
+## Python API
+
 ```python
 from iho.pipeline import load_model, generate
 
-model = load_model("SEML-Lab/IHO-Llama-3-8B-Instruct")
-target_response = "Sure, here is a harmless placeholder response."
+model = load_model(
+    "SEML-Lab/IHO-Llama-3-8B-Instruct",
+    device="cuda",
+    attack_size=32,
+    attack_steps=32,
+)
 
-attacks = generate(model, target_response)
+target_response = "Sure, here is a harmless placeholder response."
+attacks = generate(model, target_response, num_attacks=32, batch_size=32)
 ```
 
-The public API is intentionally small for evaluation use:
+The wrapper is also importable directly:
 
-- `load_model(checkpoint)` loads an IHO PEFT adapter from Hugging Face or a local path.
-- `generate(model, target_response)` returns attack prompts targeting the supplied response.
+```python
+from iho.model_wrapper.LLaDAWrapper import LLaDAWrapper
 
-Known checkpoint names include:
+wrapper = LLaDAWrapper(
+    model_name="GSAI-ML/LLaDA-8B-Base",
+    lora_checkpoint="SEML-Lab/IHO-Llama-3-8B-Instruct",
+    device="cuda",  # or "cpu"
+)
+```
+
+## Checkpoints
 
 - `SEML-Lab/IHO-Llama-3-8B-Instruct`
-- `SEML-Lab/IHO-Llama-3-8B-Instruct-RR`
-- `SEML-Lab/IHO-Llama-3-8B-Instruct-RR-with-detector`
-- `SEML-Lab/IHO-LAT-Llama-3-8B`
+- `SEML-Lab/IHO-CircuitBreaker-Llama-3-8B-PolyGuard`
+- `SEML-Lab/IHO-Qwen2.5-32B-Instruct`
+- `SEML-Lab/IHO-Qwen2.5-7B-Instruct-PolyGuard`
+- `SEML-Lab/IHO-CircuitBreaker-Llama-3-8B`
 - `SEML-Lab/IHO-Qwen2.5-7B-Instruct`
-- `SEML-Lab/IHO-Gemma-3-1B-IT`
+- `SEML-Lab/IHO-CAT-Llama-3-8B`
+- `SEML-Lab/IHO-LAT-Llama-3-8B`
 
-By default, models are loaded on CUDA when available and use Hugging Face's normal cache resolution. Pass `cache_dir=...` to `load_model` if you want an explicit cache location.
+## License
+
+MIT

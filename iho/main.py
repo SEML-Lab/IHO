@@ -88,6 +88,13 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--cache-dir",
+        type=Path,
+        default=None,
+        help="Optional writable Hugging Face cache directory.",
+    )
+
+    parser.add_argument(
         "--json",
         action="store_true",
         help="Return detailed JSON output instead of plain attacks.",
@@ -130,6 +137,7 @@ def main() -> None:
         args.checkpoint,
         device=args.device,
         dtype=args.dtype,
+        cache_dir=str(args.cache_dir) if args.cache_dir is not None else None,
         attack_size=args.attack_size,
         attack_steps=args.attack_steps,
         temperature=args.temperature,
