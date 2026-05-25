@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Literal, Optional, Sequence
 
 import torch
+from typeguard import typechecked
 
 from iho.model_wrapper import LLaDAWrapper
 
@@ -49,12 +50,14 @@ class IHOModel:
 
     checkpoint: str
     wrapper: LLaDAWrapper
-    steps: int = 32
+    attack_size: int = 32
+    attack_steps: int = 32
     temperature: float = 0.0
     remasking: Literal["low_confidence", "random"] = "low_confidence"
     mask_padding: bool = True
 
     @torch.no_grad()
+    @typechecked
     def generate(
         self,
         affirmative_response: str | Sequence[str],
@@ -62,7 +65,8 @@ class IHOModel:
         num_attacks: int = 1,
         batch_size: int = 8,
         return_dict: bool = False,
-        steps: Optional[int] = None,
+        attack_size: Optional[int] = None,
+        attack_steps: Optional[int] = None,
         temperature: Optional[float] = None,
         remasking: Optional[Literal["low_confidence", "random"]] = None,
         mask_padding: Optional[bool] = None,
@@ -81,42 +85,45 @@ class IHOModel:
                 for _ in range(num_attacks)
             ]
 
-        attack_steps = steps if steps is not None else self.steps
+        attack_size = attack_size if attack_size is not None else self.attack_size
+        attack_steps = attack_steps if attack_steps is not None else self.attack_steps
         attack_temperature = temperature if temperature is not None else self.temperature
         attack_remasking = remasking if remasking is not None else self.remasking
         attack_mask_padding = mask_padding if mask_padding is not None else self.mask_padding
 
         self.wrapper.eval()
-        outputs: list[str] | list[dict[str, Any]] = []
 
-        for start in range(0, len(responses), batch_size):
-            batch_responses = responses[start : start + batch_size]
-            target_sequences = [f"\nAnswer: {response}" for response in batch_responses]
-            target_ids = self.wrapper.encode(target_sequences)
+        if return_dict:
+            dict_outputs: list[dict[str, Any]] = []
 
-            masking_result = self.wrapper.mask_tokens(
-                token_ids=target_ids,
-                masking_mode="attack",
-                mask_all=True,
-            )
+            for start in range(0, len(responses), batch_size):
+                batch_responses = responses[start : start + batch_size]
+                target_sequences = [f"\nAnswer: {response}" for response in batch_responses]
+                target_ids = self.wrapper.encode(target_sequences)
 
-            inpainted_ids, loglikelihood = self.wrapper.predict_masked(
-                masked_ids=masking_result.masked_ids,
-                steps=attack_steps,
-                temperature=attack_temperature,
-                remasking=attack_remasking,
-                mask_padding=attack_mask_padding,
-            )
+                masking_result = self.wrapper.mask_tokens(
+                    token_ids=target_ids,
+                    attack_size=attack_size,
+                    masking_mode="attack",
+                    mask_all=True,
+                )
 
-            attack_ids = inpainted_ids[masking_result.mask_positions].view(
-                inpainted_ids.size(0),
-                -1,
-            )
-            attack_texts = self.wrapper.decode(attack_ids)
+                inpainted_ids, loglikelihood = self.wrapper.predict_masked(
+                    masked_ids=masking_result.masked_ids,
+                    attack_steps=attack_steps,
+                    temperature=attack_temperature,
+                    remasking=attack_remasking,
+                    mask_padding=attack_mask_padding,
+                )
 
-            if return_dict:
+                attack_ids = inpainted_ids[masking_result.mask_positions].view(
+                    inpainted_ids.size(0),
+                    -1,
+                )
+                attack_texts = self.wrapper.decode(attack_ids)
                 full_texts = self.wrapper.decode(inpainted_ids)
-                outputs.extend(
+
+                dict_outputs.extend(
                     {
                         "attack": attack_text,
                         "affirmative_response": response,
@@ -135,15 +142,48 @@ class IHOModel:
                         loglikelihood,
                     )
                 )
-            else:
-                outputs.extend(attack_texts)
+
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+
+            return dict_outputs
+
+        text_outputs: list[str] = []
+
+        for start in range(0, len(responses), batch_size):
+            batch_responses = responses[start : start + batch_size]
+            target_sequences = [f"\nAnswer: {response}" for response in batch_responses]
+            target_ids = self.wrapper.encode(target_sequences)
+
+            masking_result = self.wrapper.mask_tokens(
+                token_ids=target_ids,
+                attack_size=attack_size,
+                masking_mode="attack",
+                mask_all=True,
+            )
+
+            inpainted_ids, _ = self.wrapper.predict_masked(
+                masked_ids=masking_result.masked_ids,
+                attack_steps=attack_steps,
+                temperature=attack_temperature,
+                remasking=attack_remasking,
+                mask_padding=attack_mask_padding,
+            )
+
+            attack_ids = inpainted_ids[masking_result.mask_positions].view(
+                inpainted_ids.size(0),
+                -1,
+            )
+            attack_texts = self.wrapper.decode(attack_ids)
+            text_outputs.extend(attack_texts)
 
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
 
-        return outputs
+        return text_outputs
 
 
+@typechecked
 def load_model(
     checkpoint: str,
     *,
@@ -151,8 +191,8 @@ def load_model(
     device: str = "auto",
     cache_dir: Optional[str] = None,
     dtype: str | torch.dtype = torch.bfloat16,
-    attack_prefix_length: int = 32,
-    steps: int = 32,
+    attack_size: int = 32,
+    attack_steps: int = 32,
     temperature: float = 0.0,
     remasking: Literal["low_confidence", "random"] = "low_confidence",
     mask_padding: bool = True,
@@ -168,20 +208,21 @@ def load_model(
         model_name=base_model,
         device=_resolve_device(device),
         cache_dir=cache_dir,
-        attacker_input_size=attack_prefix_length,
+        attack_size=attack_size,
         dtype=_resolve_dtype(dtype),
         lora_checkpoint=checkpoint,
     )
     return IHOModel(
         checkpoint=checkpoint,
         wrapper=wrapper,
-        steps=steps,
+        attack_steps=attack_steps,
         temperature=temperature,
         remasking=remasking,
         mask_padding=mask_padding,
     )
 
 
+@typechecked
 def generate(
     model: IHOModel,
     affirmative_response: str | Sequence[str],

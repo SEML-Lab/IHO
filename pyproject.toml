@@ -8,10 +8,10 @@ authors = [{ name = "SEML Lab" }]
 dependencies = [
     "accelerate==1.8.1",
     "huggingface-hub==0.35.1",
-    "peft==0.16.0",
+    "peft>=0.16.0",
     "torch==2.7.1",
     "transformers==4.56.2",
-    "tqdm==4.67.1",
+    "tqdm>=4.67.1",
 ]
 
 [build-system]
@@ -20,7 +20,7 @@ build-backend = "hatchling.build"
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
-platforms = ["linux-64"]
+platforms = ["linux-64", "win-64"]
 
 [tool.pixi.pypi-dependencies]
 iho = { path = ".", editable = true }
@@ -29,13 +29,15 @@ torchvision = "==0.22.1"
 torchaudio = "==2.7.1"
 
 [tool.pixi.pypi-options]
-extra-index-urls = ["https://download.pytorch.org/whl/cu121"]
+extra-index-urls = ["https://download.pytorch.org/whl/cu126"]
 index-strategy = "unsafe-best-match"
 
 [tool.pixi.dependencies]
 python = "==3.11.11"
 pip = "*"
 pytest = "==8.4.2"
+typeguard = ">=4.4.0"
 
 [tool.pixi.tasks]
 test = "pytest"
+cuda-check = "python -c \"import torch; print(torch.__version__); print(torch.version.cuda); print(torch.cuda.is_available())\""
