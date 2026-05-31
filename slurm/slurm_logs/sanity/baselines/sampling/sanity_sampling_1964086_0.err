@@ -1,85 +1,0 @@
-2026-05-31 11:59:46,250 | INFO     | iho.utils.general_utils | Initialising seeds with seed=42
-2026-05-31 11:59:48,492 | INFO     | iho.pipeline | Initialized IHO Pipeline with run name: evaluation/sanity/sampling/Qwen_Qwen2.5-7B-Instruct/ALL
-2026-05-31 11:59:48,498 | INFO     | __main__ | Logger attached to logs/execution_00.log
-2026-05-31 11:59:48,501 | INFO     | iho.utils.MemoryMonitor | Started monitoring: sanity
-2026-05-31 11:59:48,504 | INFO     | iho.pipeline | Generating new sample for cycle None (mode=training)
-2026-05-31 11:59:48,512 | INFO     | iho.pipeline | [START] PHASE: ATTACK_GENERATION | MODE: training | CYCLE: None
-2026-05-31 11:59:48,512 | INFO     | iho.pipeline | Generating attack prompts for 1 batches (batch_size=128)
-2026-05-31 11:59:48,517 | INFO     | iho.utils.ModelManager | [Loading attacker model] allocated=0.00 GB | reserved=0.00 GB
-2026-05-31 11:59:48,519 | INFO     | iho.model_wrapper.LLaDAWrapper | Loading model GSAI-ML/LLaDA-8B-Base...
-Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 127.26it/s]
-2026-05-31 11:59:53,590 | INFO     | iho.model_wrapper.LLaDAWrapper | Initializing LoRA layers based on configuration...
-2026-05-31 11:59:53,699 | INFO     | iho.model_wrapper.LLaDAWrapper | trainable params: 4,194,304 || all params: 8,019,775,488 || trainable%: 0.0523
-2026-05-31 11:59:54,276 | INFO     | iho.model_wrapper.LLaDAWrapper | Model initalized successfully!
-2026-05-31 11:59:54,277 | INFO     | iho.utils.ModelManager | [Attacker model loaded] allocated=16.05 GB | reserved=16.05 GB
-Generating attack prompts:   0%|          | 0/1 [00:00<?, ?it/s]Generating attack prompts: 100%|██████████| 1/1 [00:33<00:00, 33.64s/it]Generating attack prompts: 100%|██████████| 1/1 [00:33<00:00, 33.64s/it]
-2026-05-31 12:00:27,924 | INFO     | iho.utils.ModelManager | [Unloading attacker model] allocated=16.06 GB | reserved=16.07 GB
-2026-05-31 12:00:28,027 | INFO     | iho.utils.ModelManager | [Attacker model unloaded] allocated=0.01 GB | reserved=0.03 GB
-2026-05-31 12:00:28,028 | INFO     | iho.pipeline | [END] PHASE: ATTACK_GENERATION | MODE: training | CYCLE: None
-2026-05-31 12:00:28,029 | INFO     | iho.pipeline | [START] PHASE: EMBEDDING ATTACKS | MODE: training | CYCLE: None
-2026-05-31 12:00:28,032 | INFO     | iho.utils.ModelManager | [Loading embedding model] allocated=0.01 GB | reserved=0.03 GB
-2026-05-31 12:00:28,038 | INFO     | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
-2026-05-31 12:00:30,005 | INFO     | iho.utils.ModelManager | [Embedding model loaded] allocated=0.10 GB | reserved=0.11 GB
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 16.95it/s]
-2026-05-31 12:00:30,070 | INFO     | iho.utils.ModelManager | [Unloading embedding model] allocated=0.10 GB | reserved=0.29 GB
-2026-05-31 12:00:30,077 | INFO     | iho.utils.ModelManager | [Embedding model unloaded] allocated=0.10 GB | reserved=0.11 GB
-2026-05-31 12:00:30,077 | INFO     | iho.pipeline | [END] PHASE: EMBEDDING ATTACKS | MODE: training | CYCLE: None
-2026-05-31 12:00:30,077 | INFO     | iho.pipeline | [START] PHASE: RESPONSE_GENERATION | MODE: training | CYCLE: None
-2026-05-31 12:00:30,079 | INFO     | iho.pipeline | Generating responses (batch_size=64)
-2026-05-31 12:00:30,079 | INFO     | iho.utils.ModelManager | [Loading attacked model] allocated=0.10 GB | reserved=0.11 GB
-2026-05-31 12:00:30,082 | INFO     | root | Loading model Qwen/Qwen2.5-7B-Instruct on cuda (dtype=torch.bfloat16)
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 65.19it/s]
-2026-05-31 12:00:34,927 | INFO     | iho.utils.ModelManager | [Attacked model loaded] allocated=15.29 GB | reserved=15.43 GB
-Generating responses:   0%|          | 0/2 [00:00<?, ?it/s]Generating responses:  50%|█████     | 1/2 [00:47<00:47, 47.51s/it]Generating responses: 100%|██████████| 2/2 [01:41<00:00, 51.17s/it]Generating responses: 100%|██████████| 2/2 [01:41<00:00, 50.62s/it]
-2026-05-31 12:02:16,172 | INFO     | iho.utils.ModelManager | [Unloading attacked model] allocated=17.60 GB | reserved=18.82 GB
-2026-05-31 12:02:16,172 | INFO     | iho.utils.ModelManager | [Attacked model unloaded] allocated=17.60 GB | reserved=18.82 GB
-2026-05-31 12:02:16,202 | INFO     | iho.pipeline | [END] PHASE: RESPONSE_GENERATION | MODE: training | CYCLE: None
-2026-05-31 12:02:16,203 | INFO     | iho.pipeline | [START] PHASE: EMBEDDING OUTPUTS | MODE: training | CYCLE: None
-2026-05-31 12:02:16,205 | INFO     | iho.utils.ModelManager | [Loading embedding model] allocated=17.60 GB | reserved=18.82 GB
-2026-05-31 12:02:16,211 | INFO     | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
-2026-05-31 12:02:18,083 | INFO     | iho.utils.ModelManager | [Embedding model loaded] allocated=17.69 GB | reserved=18.84 GB
-Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.42it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  7.41it/s]
-2026-05-31 12:02:18,227 | INFO     | iho.utils.ModelManager | [Unloading embedding model] allocated=17.70 GB | reserved=20.15 GB
-2026-05-31 12:02:18,231 | INFO     | iho.utils.ModelManager | [Embedding model unloaded] allocated=17.70 GB | reserved=18.84 GB
-2026-05-31 12:02:18,232 | INFO     | iho.pipeline | [END] PHASE: EMBEDDING OUTPUTS | MODE: training | CYCLE: None
-2026-05-31 12:02:18,234 | INFO     | iho.pipeline | [START] PHASE: RESPONSE_JUDGING | MODE: training | CYCLE: None
-2026-05-31 12:02:18,234 | INFO     | iho.pipeline | Judging responses (batch_size=96)
-2026-05-31 12:02:18,234 | INFO     | iho.utils.ModelManager | [Loading judge model for mode: training] allocated=17.70 GB | reserved=18.84 GB
-2026-05-31 12:02:18,236 | WARNING  | iho.utils.ModelManager | No judge model is currently loaded, so unload_judge does nothing.
-2026-05-31 12:02:18,697 | INFO     | accelerate.utils.modeling | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.16s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.69it/s]
-2026-05-31 12:02:22,008 | INFO     | iho.utils.ModelManager | [Loaded judge model for mode: training] allocated=22.74 GB | reserved=23.59 GB
-Judging responses (training):   0%|          | 0/2 [00:00<?, ?it/s]Judging responses (training):  50%|█████     | 1/2 [00:05<00:05,  5.29s/it]Judging responses (training): 100%|██████████| 2/2 [00:08<00:00,  3.96s/it]Judging responses (training): 100%|██████████| 2/2 [00:08<00:00,  4.16s/it]
-2026-05-31 12:02:30,330 | INFO     | iho.utils.ModelManager | [Judge model is loaded] allocated=7.37 GB | reserved=8.19 GB
-2026-05-31 12:02:31,070 | INFO     | iho.utils.ModelManager | [Judge model unloaded and GPU memory cleared] allocated=2.33 GB | reserved=3.41 GB
-2026-05-31 12:02:31,105 | INFO     | iho.utils.ModelManager | [Loading judge model for mode: validation] allocated=2.33 GB | reserved=3.41 GB
-2026-05-31 12:02:31,105 | WARNING  | iho.utils.ModelManager | No judge model is currently loaded, so unload_judge does nothing.
-`torch_dtype` is deprecated! Use `dtype` instead!
-2026-05-31 12:02:31,336 | INFO     | accelerate.utils.modeling | We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
-Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|█▋        | 1/6 [00:01<00:06,  1.25s/it]Loading checkpoint shards:  33%|███▎      | 2/6 [00:02<00:05,  1.27s/it]Loading checkpoint shards:  50%|█████     | 3/6 [00:03<00:03,  1.27s/it]Loading checkpoint shards:  67%|██████▋   | 4/6 [00:04<00:02,  1.22s/it]Loading checkpoint shards:  83%|████████▎ | 5/6 [00:06<00:01,  1.17s/it]Loading checkpoint shards: 100%|██████████| 6/6 [00:06<00:00,  1.16it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:06<00:00,  1.05s/it]
-2026-05-31 12:02:38,475 | INFO     | iho.utils.ModelManager | [Loaded judge model for mode: validation] allocated=28.37 GB | reserved=29.39 GB
-Judging responses (validation):   0%|          | 0/2 [00:00<?, ?it/s]Judging responses (validation):  50%|█████     | 1/2 [00:41<00:41, 41.31s/it]Judging responses (validation): 100%|██████████| 2/2 [00:54<00:00, 25.01s/it]Judging responses (validation): 100%|██████████| 2/2 [00:54<00:00, 27.46s/it]
-2026-05-31 12:03:33,393 | INFO     | iho.utils.ModelManager | [Judge model is loaded] allocated=28.37 GB | reserved=29.39 GB
-2026-05-31 12:03:34,127 | INFO     | iho.utils.ModelManager | [Judge model unloaded and GPU memory cleared] allocated=2.33 GB | reserved=3.41 GB
-2026-05-31 12:03:34,134 | INFO     | iho.pipeline | [END] PHASE: RESPONSE_JUDGING | MODE: training | CYCLE: None
-2026-05-31 12:03:34,226 | INFO     | iho.pipeline | Saved sample to evaluation/sanity/sampling/Qwen_Qwen2.5-7B-Instruct/ALL/samples_output.parquet
-2026-05-31 12:03:34,331 | INFO     | iho.utils.MemoryMonitor | ============================================================
-2026-05-31 12:03:34,331 | INFO     | iho.utils.MemoryMonitor | Profile: sanity
-2026-05-31 12:03:34,334 | INFO     | iho.utils.MemoryMonitor | ============================================================
-2026-05-31 12:03:34,334 | INFO     | iho.utils.MemoryMonitor | Memory:
-2026-05-31 12:03:34,334 | INFO     | iho.utils.MemoryMonitor |   Start - CPU RSS: 0.91 GB | GPU Alloc: 0.00 GB | GPU Reserv: 0.00 GB
-2026-05-31 12:03:34,334 | INFO     | iho.utils.MemoryMonitor |   End   - CPU RSS: 2.32 GB | GPU Alloc: 2.17 GB | GPU Reserv: 3.18 GB
-2026-05-31 12:03:34,334 | INFO     | iho.utils.MemoryMonitor |   Peak  - CPU RSS: 14.11 GB | GPU Alloc: 36.22 GB | GPU Reserv: 38.62 GB
-2026-05-31 12:03:34,334 | INFO     | iho.utils.MemoryMonitor |   Delta - CPU RSS: 1.42 GB | GPU Alloc: 2.17 GB | GPU Reserv: 3.17 GB
-2026-05-31 12:03:34,336 | INFO     | iho.utils.MemoryMonitor | Timing:
-2026-05-31 12:03:34,338 | INFO     | iho.utils.MemoryMonitor |   Total time: 225.83 seconds
-2026-05-31 12:03:34,340 | INFO     | iho.utils.MemoryMonitor |   Samples: 128
-2026-05-31 12:03:34,340 | INFO     | iho.utils.MemoryMonitor |   Samples/sec: 0.57
-2026-05-31 12:03:34,340 | INFO     | iho.utils.MemoryMonitor |   Sec/sample: 1.7643
-2026-05-31 12:03:34,340 | INFO     | iho.utils.MemoryMonitor | Metadata:
-2026-05-31 12:03:34,340 | INFO     | iho.utils.MemoryMonitor |   device: NVIDIA A100-PCIE-40GB
-2026-05-31 12:03:34,340 | INFO     | iho.utils.MemoryMonitor |   index: 0
-2026-05-31 12:03:34,343 | INFO     | iho.utils.MemoryMonitor | ============================================================
-2026-05-31 12:03:34,351 | INFO     | iho.utils.MemoryMonitor | Profile saved to evaluation/sanity/sampling/Qwen_Qwen2.5-7B-Instruct/ALL/meta/monitoring_execution_00.json
-2026-05-31 12:03:34,351 | INFO     | __main__ | Sampling complete for sampling/Qwen_Qwen2.5-7B-Instruct/ALL | samples=128
-2026-05-31 12:03:34,353 | INFO     | __main__ | Operation completed successfully
