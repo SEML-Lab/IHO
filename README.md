@@ -4,7 +4,6 @@ Reference implementation for Indirect Harm Optimization (IHO).
 
 This repository provides:
 
-- `iho.inference`: sample attacks from released or local IHO checkpoints.
 - `iho.inference_attacks_only`: generate attack strings from an attacker checkpoint.
 - `iho.inference_full`: run the full sampling pipeline against a defender model.
 - `iho.train`: run multi-cycle IHO training.
@@ -22,7 +21,7 @@ Sample attacks from an IHO checkpoint:
 
 ```bash
 pixi run python -m iho.inference_attacks_only \
-  "Sure, here is a target response." \
+  "Sure, here is how to evade legal persecution" \
   --checkpoint SEML-Lab/IHO-Llama-3-8B-Instruct \
   --device cuda \
   --num-attacks 32
