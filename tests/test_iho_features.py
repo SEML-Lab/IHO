@@ -28,7 +28,7 @@ def _cache_dir() -> str:
 
 def _tiny_lora_config() -> LoraConfig:
     return LoraConfig(
-        r=1,
+        r=4,
         lora_alpha=2,
         target_modules=["q_proj", "v_proj"],
         lora_dropout=0.0,
@@ -67,12 +67,12 @@ def _tiny_pipeline_config(*, checkpoint: str | None, scratch: bool = False) -> P
         "dpo_training": {
             "learning_rate": 1e-5,
             "beta": 0.25,
-            "dpo_epochs": 1,
+            "dpo_epochs": 5,
             "preference_masking_mode": "prompt",
             "dpo_mask_all": True,
-            "checkpoint_every": 0,
+            "checkpoint_every": 3,
             "save_checkpoints": True,
-            "percent_chosen": 1.0,
+            "percent_chosen": 0.25,
             "harmfulness_threshold": 0.0,
             "expanding_dpo_dataset": False,
             "patience": 1,
@@ -87,20 +87,20 @@ def _tiny_pipeline_config(*, checkpoint: str | None, scratch: bool = False) -> P
             "debug": True,
             "run_name": None,
             "num_sampled_attacks": {
-                "training": 1,
-                "dpo": 1,
+                "training": 32,
+                "dpo": 4,
             },
             "num_cycles": 1,
-            "gpu_type": "custom",
+            "gpu_type": "a100",
             "embed_attack_prompts": False,
             "use_detector": False,
         },
         "batch_sizes": {
-            "attack": 1,
-            "generate": 1,
-            "detector": 1,
-            "judge": 1,
-            "dpo": 1,
+            "attack": 32,
+            "generate": 32,
+            "detector": 32,
+            "judge": 32,
+            "dpo": 4,
         },
     }
     config = deep_merge(load_defaults("custom"), override)
@@ -299,7 +299,7 @@ def test_cuda_trains_one_cycle_from_scratch_on_jbb(tmp_path: Path) -> None:
         _tiny_pipeline_config(checkpoint=None, scratch=True),
     )
 
-    pipeline.execute_one_cycle(cycle_id=0)
+    pipeline.execute_one_cycle(cycle_id=1)
 
     assert (tmp_path / "train-from-scratch" / "samples" / "cycle_0.parquet").exists()
     assert (tmp_path / "train-from-scratch" / "dpo_sets" / "cycle_0.parquet").exists()
@@ -314,7 +314,7 @@ def test_cuda_finetunes_one_cycle_from_predefined_checkpoint_on_jbb(tmp_path: Pa
         _tiny_pipeline_config(checkpoint=DEFAULT_CHECKPOINT),
     )
 
-    pipeline.execute_one_cycle(cycle_id=0)
+    pipeline.execute_one_cycle(cycle_id=1)
 
     assert (
         tmp_path
