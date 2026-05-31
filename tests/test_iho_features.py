@@ -203,8 +203,31 @@ def test_train_cli_runs_wrapper_without_launching_models(monkeypatch: pytest.Mon
     )
 
 
-def test_inference_cli_runs_sampling_wrapper_without_launching_models(monkeypatch: pytest.MonkeyPatch) -> None:
-    inference_cli = importlib.import_module("iho.inference")
+def test_experiment_runner_uses_model_and_row_run_paths() -> None:
+    from iho.configs.slurm_presets import baseline_fixed_args
+    from slurm.slurm_wrapper import IHOExperimentRunner, build_user_override
+
+    runner = IHOExperimentRunner(
+        config_override=build_user_override(
+            baseline_fixed_args(model="CAT/local", n_cycles=2, cache_dir=None)
+        ),
+        gpu_type="h200",
+        overwrite_output=False,
+        enable_monitoring=False,
+    )
+
+    assert (
+        runner._generate_run_name("baseline_fixed", "CAT/local")
+        == "baseline_fixed/CAT_local/THE_TRAINING_ONES_BIG_STRATIFIED"
+    )
+    assert (
+        runner._generate_run_name("baseline_fixed", "CAT/local", row_idx=0)
+        == "baseline_fixed/CAT_local/row_0"
+    )
+
+
+def test_inference_full_cli_runs_sampling_wrapper_without_launching_models(monkeypatch: pytest.MonkeyPatch) -> None:
+    inference_cli = importlib.import_module("iho.inference_full")
     calls: list[tuple[str, object]] = []
 
     class FakeRunner:
@@ -238,7 +261,7 @@ def test_inference_cli_runs_sampling_wrapper_without_launching_models(monkeypatc
         sys,
         "argv",
         [
-            "python -m iho.inference",
+            "python -m iho.inference_full",
             "--model",
             "meta-llama/Meta-Llama-3-8B-Instruct",
             "--rows",
@@ -287,6 +310,29 @@ def test_cuda_jbb_inference_pipeline_with_llama_and_judge(tmp_path: Path) -> Non
     assert str(row["attacking_prompt_text"]).strip()
     assert str(row["attacked_output"]).strip()
     assert torch.isfinite(torch.tensor([float(row["judge_score_training"])] )).all()
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason=CUDA_REASON)
+def test_cuda_attack_only_inference_from_predefined_checkpoint() -> None:
+    model = iho.load_model(
+        checkpoint=DEFAULT_CHECKPOINT,
+        device="cuda",
+        cache_dir=_cache_dir() or None,
+        attack_size=8,
+    )
+
+    attacks = iho.generate(
+        model,
+        "Sure, here is how to evade legal persecution",
+        num_attacks=8,
+        batch_size=8,
+        attack_size=32,
+        attack_steps=32,
+    )
+
+    assert len(attacks) == 1
+    assert isinstance(attacks[0], str)
+    assert attacks[0].strip()
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason=CUDA_REASON)
