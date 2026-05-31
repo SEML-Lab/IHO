@@ -105,9 +105,9 @@ def _tiny_pipeline_config(*, checkpoint: str | None, scratch: bool = False) -> P
         },
     }
     config = deep_merge(load_defaults("custom"), override)
-    config["attack_dataset"]["behaviour_subsets"] = {"training": [0]}
+    config["attack_dataset"]["behaviour_subsets"] = {"training": [0], "dpo": [0]}
     config["judge_models_config"] = {"training": "strong_reject"}
-    config["general"]["num_sampled_attacks"] = {"training": 1, "dpo": 1}
+    config["general"]["num_sampled_attacks"] = {"training": 32, "dpo": 4}
     return config
 
 
