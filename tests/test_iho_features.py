@@ -105,9 +105,6 @@ def _tiny_pipeline_config(*, checkpoint: str | None, scratch: bool = False) -> P
         },
     }
     config = deep_merge(load_defaults("custom"), override)
-    config["attack_dataset"]["behaviour_subsets"] = {"training": [0], "dpo": [0]}
-    config["judge_models_config"] = {"training": "strong_reject"}
-    config["general"]["num_sampled_attacks"] = {"training": 32, "dpo": 4}
     return config
 
 
@@ -300,11 +297,14 @@ def test_cuda_trains_one_cycle_from_scratch_on_jbb(tmp_path: Path) -> None:
         _tiny_pipeline_config(checkpoint=None, scratch=True),
     )
 
-    pipeline.execute_one_cycle(cycle_id=1)
+    pipeline.execute_multiple_cycles(n_cycles=2)
 
     assert (tmp_path / "train-from-scratch" / "samples" / "cycle_0.parquet").exists()
+    assert (tmp_path / "train-from-scratch" / "samples" / "cycle_1.parquet").exists()
     assert (tmp_path / "train-from-scratch" / "dpo_sets" / "cycle_0.parquet").exists()
+    assert (tmp_path / "train-from-scratch" / "dpo_sets" / "cycle_1.parquet").exists()
     assert (tmp_path / "train-from-scratch" / "checkpoints" / "best_cycle_0" / "adapter_config.json").exists()
+    assert (tmp_path / "train-from-scratch" / "checkpoints" / "best_cycle_1" / "adapter_config.json").exists()
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason=CUDA_REASON)
@@ -315,12 +315,19 @@ def test_cuda_finetunes_one_cycle_from_predefined_checkpoint_on_jbb(tmp_path: Pa
         _tiny_pipeline_config(checkpoint=DEFAULT_CHECKPOINT),
     )
 
-    pipeline.execute_one_cycle(cycle_id=1)
+    pipeline.execute_multiple_cycles(n_cycles=2)
 
     assert (
         tmp_path
         / "finetune-from-predefined-checkpoint"
         / "checkpoints"
         / "best_cycle_0"
+        / "adapter_config.json"
+    ).exists()
+    assert (
+        tmp_path
+        / "finetune-from-predefined-checkpoint"
+        / "checkpoints"
+        / "best_cycle_1"
         / "adapter_config.json"
     ).exists()
