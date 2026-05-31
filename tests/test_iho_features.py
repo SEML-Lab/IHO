@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+import importlib
+import sys
 from pathlib import Path
 
 import pytest
@@ -131,6 +133,142 @@ def test_minimal_setup_when_cuda_is_unavailable(capsys: pytest.CaptureFixture[st
 
     captured = capsys.readouterr()
     assert "CUDA unavailable" in captured.out
+
+
+def test_sampling_preset_accepts_named_int_and_list_rows() -> None:
+    from iho.configs.slurm_presets import full_sampling_new_args
+
+    assert full_sampling_new_args(model="CAT/local", rows="ALL", id_index=0, cache_dir=None).training_rows == "ALL"
+    assert full_sampling_new_args(model="CAT/local", rows="17", id_index=0, cache_dir=None).training_rows == [17]
+    assert full_sampling_new_args(model="CAT/local", rows="[0, 3, 9]", id_index=0, cache_dir=None).training_rows == [0, 3, 9]
+
+
+def test_train_cli_runs_wrapper_without_launching_models(monkeypatch: pytest.MonkeyPatch) -> None:
+    train_cli = importlib.import_module("iho.train")
+    calls: list[tuple[str, object]] = []
+
+    class FakeRunner:
+        def __init__(self, *, config_override, gpu_type, overwrite_output, enable_monitoring) -> None:
+            calls.append(
+                (
+                    "init",
+                    {
+                        "config_override": config_override,
+                        "gpu_type": gpu_type,
+                        "overwrite_output": overwrite_output,
+                        "enable_monitoring": enable_monitoring,
+                    },
+                )
+            )
+
+        def train_multi_cycle(self, experiment_root_dir, sub_experiment_name, n_cycles, iterate_rows_separately) -> None:
+            calls.append(
+                (
+                    "train",
+                    {
+                        "experiment_root_dir": experiment_root_dir,
+                        "sub_experiment_name": sub_experiment_name,
+                        "n_cycles": n_cycles,
+                        "iterate_rows_separately": iterate_rows_separately,
+                    },
+                )
+            )
+
+    monkeypatch.setattr(train_cli, "IHOExperimentRunner", FakeRunner)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["python -m iho.train", "--model", "CAT/local", "--n-cycles", "2", "--disable-monitoring"],
+    )
+
+    train_cli.main()
+
+    init = calls[0][1]
+    config = init["config_override"]
+    assert init["gpu_type"] == "h200"
+    assert init["enable_monitoring"] is False
+    assert config["attack_dataset"]["behaviour_subsets"]["training"] == "THE_TRAINING_ONES_BIG_STRATIFIED"
+    assert config["attack_dataset"]["behaviour_subsets"]["validation"] == "THE_VALIDATION_ONES_STRATIFIED"
+    assert config["attack_dataset"]["behaviour_subsets"]["dpo"] == "THE_TRAINING_ONES_BIG_STRATIFIED"
+    assert config["attacked_model"]["model_ids"] == ["CAT/local"]
+    assert config["dpo_training"]["learning_rate"] == 0.0002
+    assert config["general"]["num_sampled_attacks"]["training"] == 15360
+    assert config["general"]["num_cycles"] == 2
+    assert calls[1] == (
+        "train",
+        {
+            "experiment_root_dir": "evaluation/multi_target_multi_cycle_ablations",
+            "sub_experiment_name": "baseline_fixed",
+            "n_cycles": 2,
+            "iterate_rows_separately": False,
+        },
+    )
+
+
+def test_inference_cli_runs_sampling_wrapper_without_launching_models(monkeypatch: pytest.MonkeyPatch) -> None:
+    inference_cli = importlib.import_module("iho.inference")
+    calls: list[tuple[str, object]] = []
+
+    class FakeRunner:
+        def __init__(self, *, config_override, gpu_type, overwrite_output, enable_monitoring) -> None:
+            calls.append(
+                (
+                    "init",
+                    {
+                        "config_override": config_override,
+                        "gpu_type": gpu_type,
+                        "overwrite_output": overwrite_output,
+                        "enable_monitoring": enable_monitoring,
+                    },
+                )
+            )
+
+        def sample(self, experiment_root_dir, sub_experiment_name, iterate_rows_separately) -> None:
+            calls.append(
+                (
+                    "sample",
+                    {
+                        "experiment_root_dir": experiment_root_dir,
+                        "sub_experiment_name": sub_experiment_name,
+                        "iterate_rows_separately": iterate_rows_separately,
+                    },
+                )
+            )
+
+    monkeypatch.setattr(inference_cli, "IHOExperimentRunner", FakeRunner)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "python -m iho.inference",
+            "--model",
+            "CAT/local",
+            "--rows",
+            "[0, 3, 9]",
+            "--id-index",
+            "5",
+        ],
+    )
+
+    inference_cli.main()
+
+    init = calls[0][1]
+    config = init["config_override"]
+    assert init["gpu_type"] == "a100"
+    assert init["overwrite_output"] is True
+    assert config["attack_dataset"]["behaviour_subsets"]["training"] == [0, 3, 9]
+    assert config["attacked_model"]["model_ids"] == ["CAT/local"]
+    assert config["judge_models_config"]["validation_2"] == "llama_guard_3"
+    assert config["general"]["num_sampled_attacks"]["training"] == 1280
+    assert config["general"]["seed"] == 5
+    assert calls[1] == (
+        "sample",
+        {
+            "experiment_root_dir": "evaluation/sampling/sampling_baselines",
+            "sub_experiment_name": "partial_sampling_new_id/5",
+            "iterate_rows_separately": False,
+        },
+    )
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason=CUDA_REASON)
