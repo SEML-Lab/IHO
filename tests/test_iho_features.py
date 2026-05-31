@@ -136,9 +136,9 @@ def test_minimal_setup_when_cuda_is_unavailable(capsys: pytest.CaptureFixture[st
 def test_sampling_preset_accepts_named_int_and_list_rows() -> None:
     from iho.configs.slurm_presets import full_sampling_new_args
 
-    assert full_sampling_new_args(model="CAT/local", rows="ALL", id_index=0, cache_dir=None).training_rows == "ALL"
-    assert full_sampling_new_args(model="CAT/local", rows="17", id_index=0, cache_dir=None).training_rows == [17]
-    assert full_sampling_new_args(model="CAT/local", rows="[0, 3, 9]", id_index=0, cache_dir=None).training_rows == [0, 3, 9]
+    assert full_sampling_new_args(model=TARGET_MODEL, rows="ALL", id_index=0, cache_dir=None).training_rows == "ALL"
+    assert full_sampling_new_args(model=TARGET_MODEL, rows="17", id_index=0, cache_dir=None).training_rows == [17]
+    assert full_sampling_new_args(model=TARGET_MODEL, rows="[0, 3, 9]", id_index=0, cache_dir=None).training_rows == [0, 3, 9]
 
 
 def test_train_cli_runs_wrapper_without_launching_models(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -176,7 +176,7 @@ def test_train_cli_runs_wrapper_without_launching_models(monkeypatch: pytest.Mon
     monkeypatch.setattr(
         sys,
         "argv",
-        ["python -m iho.train", "--model", "CAT/local", "--n-cycles", "2", "--disable-monitoring"],
+        ["python -m iho.train", "--model", TARGET_MODEL, "--n-cycles", "2", "--disable-monitoring"],
     )
 
     train_cli.main()
@@ -188,7 +188,7 @@ def test_train_cli_runs_wrapper_without_launching_models(monkeypatch: pytest.Mon
     assert config["attack_dataset"]["behaviour_subsets"]["training"] == "THE_TRAINING_ONES_BIG_STRATIFIED"
     assert config["attack_dataset"]["behaviour_subsets"]["validation"] == "THE_VALIDATION_ONES_STRATIFIED"
     assert config["attack_dataset"]["behaviour_subsets"]["dpo"] == "THE_TRAINING_ONES_BIG_STRATIFIED"
-    assert config["attacked_model"]["model_ids"] == ["CAT/local"]
+    assert config["attacked_model"]["model_ids"] == [TARGET_MODEL]
     assert config["dpo_training"]["learning_rate"] == 0.0002
     assert config["general"]["num_sampled_attacks"]["training"] == 15360
     assert config["general"]["num_cycles"] == 2
@@ -209,7 +209,7 @@ def test_experiment_runner_uses_model_and_row_run_paths() -> None:
 
     runner = IHOExperimentRunner(
         config_override=build_user_override(
-            baseline_fixed_args(model="CAT/local", n_cycles=2, cache_dir=None)
+            baseline_fixed_args(model=TARGET_MODEL, n_cycles=2, cache_dir=None)
         ),
         gpu_type="h200",
         overwrite_output=False,
@@ -217,12 +217,12 @@ def test_experiment_runner_uses_model_and_row_run_paths() -> None:
     )
 
     assert (
-        runner._generate_run_name("baseline_fixed", "CAT/local")
-        == "baseline_fixed/CAT_local/THE_TRAINING_ONES_BIG_STRATIFIED"
+        runner._generate_run_name("baseline_fixed", TARGET_MODEL)
+        == "baseline_fixed/meta-llama_Meta-Llama-3-8B-Instruct/THE_TRAINING_ONES_BIG_STRATIFIED"
     )
     assert (
-        runner._generate_run_name("baseline_fixed", "CAT/local", row_idx=0)
-        == "baseline_fixed/CAT_local/row_0"
+        runner._generate_run_name("baseline_fixed", TARGET_MODEL, row_idx=0)
+        == "baseline_fixed/meta-llama_Meta-Llama-3-8B-Instruct/row_0"
     )
 
 
@@ -330,7 +330,7 @@ def test_cuda_attack_only_inference_from_predefined_checkpoint() -> None:
         attack_steps=32,
     )
 
-    assert len(attacks) == 1
+    assert len(attacks) == 8
     assert isinstance(attacks[0], str)
     assert attacks[0].strip()
 
