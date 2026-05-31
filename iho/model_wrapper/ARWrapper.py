@@ -8,8 +8,6 @@ from tqdm import tqdm
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from iho.utils.ModelManager import cuda_mem
-
 @dataclass
 class LLMConfig:
     model_name: str
@@ -90,22 +88,18 @@ class ARWrapper:
         """
         with torch.no_grad():
             logits = self.model(input_ids=sequences).logits  # (B, T, vocab)
-        cuda_mem("After forward pass for logprobs")
         # Shift: predict token t from context [0..t-1]
         shift_logits = logits[:, :-1].contiguous()    # (B, T-1, vocab)
         del logits
-        cuda_mem("After deleting logits")
 
         log_probs = torch.nn.functional.log_softmax(shift_logits, dim=-1)
         del shift_logits
-        cuda_mem("After deleting shifts_logits")
 
         # Gather log-prob of the actual token at each position
         shift_ids    = sequences[:, 1:].contiguous()  # (B, T-1)
         token_logprobs = log_probs.gather(
             -1, shift_ids.unsqueeze(-1)
         ).squeeze(-1)  # (B, T-1)
-        cuda_mem("After deleting shifts_logits")
         del log_probs
 
         # Mask: only sum over generated tokens, not prompt or padding
@@ -135,7 +129,6 @@ class ARWrapper:
     ) -> List[dict]:
 
         self.model.eval()
-        cuda_mem("Before generation")
         if isinstance(prompts, str):
             prompts = [prompts]
         if system_prompts is not None and isinstance(system_prompts, str):
@@ -203,21 +196,16 @@ class ARWrapper:
                     )
 
             with torch.no_grad():
-                cuda_mem("Before generation step")
                 outputs = self.model.generate(**generation_kwargs)
-                cuda_mem("After generation step")
 
             sequences = outputs.sequences  # (B, prompt_len + gen_len) #type: ignore
-            cuda_mem("Here 1")
 
             del outputs  # free KV cache / any retained tensors immediately
-            cuda_mem("Here 2")
 
             if compute_logprobs:
                 sequence_logprobs, gen_lengths = self._compute_sequence_logprobs(
                     sequences, prompt_len
                 )
-            cuda_mem("After")
 
             decoded_full = self.tokenizer.batch_decode(sequences, skip_special_tokens=True)
             decoded_gen = self.tokenizer.batch_decode(sequences[:, prompt_len:], skip_special_tokens=True)

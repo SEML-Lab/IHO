@@ -37,13 +37,3 @@ Environment variables:
 
 Cluster names, partitions, wall times, and array limits are site-specific; edit
 the `#SBATCH` headers before submitting on a different cluster.
-
-Excluded legacy templates:
-
-- `cross_model/cross_model_training.slurm`: intentionally removed.
-- `sanity/kto_support_dpo.slurm`: contains unresolved merge-conflict markers.
-- `sanity/kto_support_kto.slurm`: uses unsupported KTO finetuning flags.
-- `single_target/single_cycle_ablations/kto_ablation.slurm`: uses unsupported
-  KTO finetuning flags.
-
-Ported 57 templates.

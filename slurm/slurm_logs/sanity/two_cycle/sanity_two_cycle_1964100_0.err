@@ -1,0 +1,60 @@
+2026-05-31 12:15:48,667 | INFO     | iho.utils.general_utils | Initialising seeds with seed=42
+2026-05-31 12:15:50,880 | INFO     | iho.pipeline | Initialized IHO Pipeline with run name: evaluation/sanity/iho_pipeline/Qwen_Qwen2.5-7B-Instruct/ALL
+2026-05-31 12:15:50,885 | INFO     | __main__ | Logger attached to logs/execution_01.log
+2026-05-31 12:15:50,886 | INFO     | iho.utils.MemoryMonitor | Started monitoring: sanity
+2026-05-31 12:15:50,887 | INFO     | iho.pipeline | Starting execution of 2 cycles
+2026-05-31 12:15:50,888 | INFO     | iho.pipeline | Starting from scratch (no checkpoints found)
+2026-05-31 12:15:50,888 | INFO     | iho.pipeline | [START] CYCLE: 1/2
+2026-05-31 12:15:50,889 | INFO     | iho.pipeline | Sample for cycle 0 (mode=training) already exists, loading from disk
+2026-05-31 12:15:50,889 | INFO     | iho.pipeline | Loading existing sample from evaluation/sanity/iho_pipeline/Qwen_Qwen2.5-7B-Instruct/ALL/samples/cycle_0.parquet
+2026-05-31 12:15:50,932 | WARNING  | iho.datasets.PreferenceDataset | PreferenceDataset initialized with zero preference pairs
+2026-05-31 12:15:50,932 | INFO     | iho.pipeline | Generated 0 preference pairs for DPO training
+2026-05-31 12:15:50,938 | INFO     | iho.pipeline | Saved preference dataset to evaluation/sanity/iho_pipeline/Qwen_Qwen2.5-7B-Instruct/ALL/dpo_sets/cycle_0.parquet
+2026-05-31 12:15:50,938 | INFO     | iho.pipeline | [START] PHASE: DPO_TRAINING | DPO TRAINING: ACTIVE | CYCLE: 0
+2026-05-31 12:15:50,938 | INFO     | iho.utils.ModelManager | [Loading attacker model] allocated=0.00 GB | reserved=0.00 GB
+2026-05-31 12:15:50,938 | INFO     | iho.model_wrapper.LLaDAWrapper | Loading model GSAI-ML/LLaDA-8B-Base...
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 3/6 [00:00<00:00, 18.89it/s]Loading checkpoint shards:  83%|████████▎ | 5/6 [00:00<00:00, 16.86it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 18.71it/s]
+2026-05-31 12:16:28,222 | INFO     | iho.model_wrapper.LLaDAWrapper | Initializing LoRA layers based on configuration...
+2026-05-31 12:16:28,333 | INFO     | iho.model_wrapper.LLaDAWrapper | trainable params: 4,194,304 || all params: 8,019,775,488 || trainable%: 0.0523
+2026-05-31 12:16:28,833 | INFO     | iho.model_wrapper.LLaDAWrapper | Model initalized successfully!
+2026-05-31 12:16:28,834 | INFO     | iho.utils.ModelManager | [Attacker model loaded] allocated=16.05 GB | reserved=16.05 GB
+2026-05-31 12:16:28,834 | INFO     | iho.utils.ModelManager | [Initializing DPO trainer] allocated=16.05 GB | reserved=16.05 GB
+2026-05-31 12:16:28,836 | INFO     | iho.utils.ModelManager | [DPO trainer initialized] allocated=16.05 GB | reserved=16.05 GB
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor | ============================================================
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor | Profile: sanity
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor | ============================================================
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor | Memory:
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor |   Start - CPU RSS: 0.91 GB | GPU Alloc: 0.00 GB | GPU Reserv: 0.00 GB
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor |   End   - CPU RSS: 1.01 GB | GPU Alloc: 14.95 GB | GPU Reserv: 14.95 GB
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor |   Peak  - CPU RSS: 14.49 GB | GPU Alloc: 14.95 GB | GPU Reserv: 14.95 GB
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor |   Delta - CPU RSS: 0.11 GB | GPU Alloc: 14.95 GB | GPU Reserv: 14.95 GB
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor | Timing:
+2026-05-31 12:16:28,932 | INFO     | iho.utils.MemoryMonitor |   Total time: 38.05 seconds
+2026-05-31 12:16:28,933 | INFO     | iho.utils.MemoryMonitor | Metadata:
+2026-05-31 12:16:28,933 | INFO     | iho.utils.MemoryMonitor |   device: NVIDIA A100-PCIE-40GB
+2026-05-31 12:16:28,933 | INFO     | iho.utils.MemoryMonitor |   index: 0
+2026-05-31 12:16:28,933 | INFO     | iho.utils.MemoryMonitor | ============================================================
+2026-05-31 12:16:28,939 | INFO     | iho.utils.MemoryMonitor | Profile saved to evaluation/sanity/iho_pipeline/Qwen_Qwen2.5-7B-Instruct/ALL/meta/monitoring_execution_01.json
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/nfs/homedirs/limbach/master_thesis/IHO/slurm/slurm_wrapper.py", line 436, in <module>
+    main()
+  File "/nfs/homedirs/limbach/master_thesis/IHO/slurm/slurm_wrapper.py", line 431, in main
+    runner.train_multi_cycle(args.experiment_root, args.sub_experiment_name, args.n_cycles, args.iterate_rows_separately)
+  File "/nfs/homedirs/limbach/master_thesis/IHO/slurm/slurm_wrapper.py", line 326, in train_multi_cycle
+    pipeline.execute_multiple_cycles(n_cycles=n_cycles)
+  File "/nfs/homedirs/limbach/master_thesis/IHO/iho/pipeline.py", line 581, in execute_multiple_cycles
+    self.execute_one_cycle(
+  File "/nfs/homedirs/limbach/master_thesis/IHO/iho/pipeline.py", line 539, in execute_one_cycle
+    _ = self._train_preference(
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nfs/homedirs/limbach/master_thesis/IHO/iho/pipeline.py", line 457, in _train_preference
+    dataloader = DataLoader(
+                 ^^^^^^^^^^^
+  File "/nfs/homedirs/limbach/master_thesis/IHO/.pixi/envs/default/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 385, in __init__
+    sampler = RandomSampler(dataset, generator=generator)  # type: ignore[arg-type]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nfs/homedirs/limbach/master_thesis/IHO/.pixi/envs/default/lib/python3.11/site-packages/torch/utils/data/sampler.py", line 156, in __init__
+    raise ValueError(
+ValueError: num_samples should be a positive integer value, but got num_samples=0

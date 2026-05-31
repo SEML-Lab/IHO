@@ -1,0 +1,26 @@
+2026-05-31 11:58:12,862 | INFO     | iho.utils.general_utils | Initialising seeds with seed=42
+2026-05-31 11:58:15,219 | INFO     | iho.pipeline | Initialized IHO Pipeline with run name: evaluation/sanity/sampling/Qwen_Qwen2.5-7B-Instruct/ALL
+2026-05-31 11:58:15,224 | INFO     | __main__ | Logger attached to logs/execution_02.log
+2026-05-31 11:58:15,225 | INFO     | iho.utils.MemoryMonitor | Started monitoring: sanity
+2026-05-31 11:58:15,229 | INFO     | iho.pipeline | Sample for cycle None (mode=training) already exists, loading from disk
+2026-05-31 11:58:15,232 | INFO     | iho.pipeline | Loading existing sample from evaluation/sanity/sampling/Qwen_Qwen2.5-7B-Instruct/ALL/samples_output.parquet
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor | ============================================================
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor | Profile: sanity
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor | ============================================================
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor | Memory:
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor |   Start - CPU RSS: 0.91 GB | GPU Alloc: 0.00 GB | GPU Reserv: 0.00 GB
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor |   End   - CPU RSS: 0.92 GB | GPU Alloc: 0.00 GB | GPU Reserv: 0.00 GB
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor |   Peak  - CPU RSS: 0.92 GB | GPU Alloc: 0.00 GB | GPU Reserv: 0.00 GB
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor |   Delta - CPU RSS: 0.01 GB | GPU Alloc: 0.00 GB | GPU Reserv: 0.00 GB
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor | Timing:
+2026-05-31 11:58:15,330 | INFO     | iho.utils.MemoryMonitor |   Total time: 0.10 seconds
+2026-05-31 11:58:15,331 | INFO     | iho.utils.MemoryMonitor |   Samples: 128
+2026-05-31 11:58:15,331 | INFO     | iho.utils.MemoryMonitor |   Samples/sec: 1221.60
+2026-05-31 11:58:15,331 | INFO     | iho.utils.MemoryMonitor |   Sec/sample: 0.0008
+2026-05-31 11:58:15,331 | INFO     | iho.utils.MemoryMonitor | Metadata:
+2026-05-31 11:58:15,331 | INFO     | iho.utils.MemoryMonitor |   device: NVIDIA A100-PCIE-40GB
+2026-05-31 11:58:15,331 | INFO     | iho.utils.MemoryMonitor |   index: 0
+2026-05-31 11:58:15,331 | INFO     | iho.utils.MemoryMonitor | ============================================================
+2026-05-31 11:58:15,338 | INFO     | iho.utils.MemoryMonitor | Profile saved to evaluation/sanity/sampling/Qwen_Qwen2.5-7B-Instruct/ALL/meta/monitoring_execution_02.json
+2026-05-31 11:58:15,339 | INFO     | __main__ | Sampling complete for sampling/Qwen_Qwen2.5-7B-Instruct/ALL | samples=128
+2026-05-31 11:58:15,339 | INFO     | __main__ | Operation completed successfully

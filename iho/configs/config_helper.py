@@ -12,6 +12,7 @@ ALL = list(range(100))
 THE_TRAINING_ONES_SMALL_STRATIFIED = [0, 19, 20, 39, 40, 55, 62, 78, 84, 91] 
 THE_TRAINING_ONES_BIG_STRATIFIED = [0, 2, 5, 6, 8, 9, 10, 14, 15, 16, 17, 19, 20, 21, 22, 25, 27, 28, 31, 34, 35, 36, 37, 39, 40, 42, 43, 45, 46, 49, 50, 54, 55, 56, 57, 59, 61, 62, 64, 65, 66, 68, 71, 74, 76, 77, 78, 79, 81, 82, 83, 84, 88, 89, 91, 92, 93, 97, 98, 99] 
 THE_VALIDATION_ONES_STRATIFIED = [3, 7, 12, 13, 23, 24, 30, 32, 44, 47, 51, 53, 60, 69, 72, 75, 86, 87, 90, 95] 
+#Please note that the original further splitting non training into Test and Validation was dropped. In the paper we reported the performance of the joint index set when refering to 40 heldout validation behaviours.
 THE_TEST_HELD_OUT_STRATIFIED = [1, 4, 11, 18, 26, 29, 33, 38, 41, 48, 52, 58, 63, 67, 70, 73, 80, 85, 94, 96]
 
 ALL_MODELS = ["google/gemma-3-1b-it", "meta-llama/Meta-Llama-3-8B-Instruct", "GraySwanAI/Llama-3-8B-Instruct-RR", "GraySwanAI/Llama-3-8B-Instruct-RR-with-detector", "LLM-LAT/robust-llama3-8b-instruct", "CAT/local", "ContinuousAT/Llama-2-7B-CAT", "Qwen/Qwen2.5-7B-Instruct", "Qwen/Qwen2.5-7B-Instruct-with-detector", "Qwen/Qwen2.5-32B-Instruct"]
@@ -212,7 +213,7 @@ DEFAULT_PIPELINE_CONFIG: PipelineConfig = {
         "max_new_tokens": 256,
         "use_chat_template": True,
         "greedy_sampling": False,
-        "compute_logprobs": True
+        "compute_logprobs": False
     },
     "detector_model": {
         "model_id": "ToxicityPrompts/PolyGuard-Qwen-Smol",
