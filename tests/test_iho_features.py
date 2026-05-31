@@ -43,6 +43,7 @@ def _tiny_pipeline_config(*, checkpoint: str | None, scratch: bool = False) -> P
             "dataset_name": "jbb",
             "behaviour_subsets": {
                 "training": [0],
+                "dpo": [0],
             },
         },
         "attack_model": {
@@ -242,7 +243,7 @@ def test_inference_cli_runs_sampling_wrapper_without_launching_models(monkeypatc
         [
             "python -m iho.inference",
             "--model",
-            "CAT/local",
+            "meta-llama/Meta-Llama-3-8B-Instruct",
             "--rows",
             "[0, 3, 9]",
             "--id-index",
@@ -257,7 +258,7 @@ def test_inference_cli_runs_sampling_wrapper_without_launching_models(monkeypatc
     assert init["gpu_type"] == "a100"
     assert init["overwrite_output"] is True
     assert config["attack_dataset"]["behaviour_subsets"]["training"] == [0, 3, 9]
-    assert config["attacked_model"]["model_ids"] == ["CAT/local"]
+    assert config["attacked_model"]["model_ids"] == ["meta-llama/Meta-Llama-3-8B-Instruct"]
     assert config["judge_models_config"]["validation_2"] == "llama_guard_3"
     assert config["general"]["num_sampled_attacks"]["training"] == 1280
     assert config["general"]["seed"] == 5
@@ -281,7 +282,7 @@ def test_cuda_jbb_inference_pipeline_with_llama_and_judge(tmp_path: Path) -> Non
 
     samples = pipeline.sample(mode="training", save_df=True, cycle_id=0)
 
-    assert len(samples) == 1
+    assert len(samples) == 32
     row = samples.iloc[0]
     assert int(row["jb_index"]) == 0
     assert str(row["goal_text"]).strip()
