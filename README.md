@@ -19,7 +19,9 @@ pixi install
 Sample attacks from an IHO checkpoint:
 
 ```bash
-pixi run python -m iho.inference --model CAT/local --id-index 0
+pixi run python -m iho.inference \
+  --model meta-llama/Meta-Llama-3-8B-Instruct \
+  --rows ALL
 ```
 
 ## Training
@@ -27,7 +29,9 @@ pixi run python -m iho.inference --model CAT/local --id-index 0
 Run multi-cycle IHO training:
 
 ```bash
-pixi run python -m iho.train --model CAT/local --n-cycles 3
+pixi run python -m iho.train \
+  --model meta-llama/Meta-Llama-3-8B-Instruct \
+  --n-cycles 3
 ```
 
 ## Reproducing Experiments
