@@ -110,7 +110,7 @@ pixi run python -m iho.train \
 The paper’s method diagram is shown below for quick reference. For the full derivation and design rationale, refer to the paper.
 
 <p align="center">
-  <img src="assets/iho_method_figure_original.png" width="700" alt="Original IHO method overview figure from the paper">
+  <img src="assets/iho_method_figure_original.png" width="760" alt="Original IHO method overview figure from the paper">
 </p>
 
 ## Reproducing Experiments
@@ -140,7 +140,7 @@ The table below reproduces the main adaptive-attack and held-out-behavior compar
 For metric definitions, evaluation protocol, and the corresponding ASR tables, see the paper and Appendix G.
 
 <p align="center">
-  <img src="assets/iho_table1_paper.png" width="980" alt="Table 1 from the IHO paper showing EVUS results on training and held-out behaviors">
+  <img src="assets/iho_table1_paper.png" width="100%" alt="Table 1 from the IHO paper showing EVUS results on training and held-out behaviors">
 </p>
 
 ## Responsible Use
