@@ -1,6 +1,8 @@
 # IHO
 
-Reference implementation for Indirect Harm Optimization (IHO).
+[![ArXiv](https://img.shields.io/badge/arXiv-2606.03647-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2606.03647)
+
+Official implementation of Indirect Harm Optimization (IHO) from *Black-box, Adaptive, Efficient, Transferable, Harmful, Applicable... Attacks Are All You Need to Break LLMs.*
 
 This repository provides:
 
@@ -64,3 +66,19 @@ pixi run python -m slurm.slurm_wrapper --help
 ## License
 
 MIT
+
+## Citation
+
+Please cite the Limbach et al., 2026, *"Black-box, Adaptive, Efficient, Transferable, Harmful, Applicable... Attacks Are All You Need to Break LLMs."*:
+
+```bibtex
+@misc{limbach2026blackboxadaptiveefficient,
+  title={Black-box, Adaptive, Efficient, Transferable, Harmful, Applicable... Attacks Are All You Need to Break LLMs},
+  author={Vincent Limbach and Jonas Dornbusch and David L{\"u}dke and Stephan G{\"u}nnemann and Leo Schwinn},
+  year={2026},
+  eprint={2606.03647},
+  archivePrefix={arXiv},
+  primaryClass={cs.CR},
+  url={https://arxiv.org/abs/2606.03647},
+}
+```
